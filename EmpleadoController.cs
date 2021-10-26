@@ -1,41 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
-namespace PL.Controllers
+namespace SL.Controllers
 {
-    public class EmpleadoController : Controller
+    public class EmpleadoController : ApiController
     {
-        // GET: Empleado
-        public ActionResult GetAll()
-        {
-            return View();
-        }
-
-        public JsonResult Get()
-        {
-            ML.Result result = BL.Empleado.GetAll();
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult Add(ML.Empleado empleado)
-        {
-            ML.Result result = BL.Empleado.GetAll();
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult Update()
-        {
-            ML.Result result = BL.Empleado.GetAll();
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }  
- 
         [HttpGet]
-        public ActionResult Form()
+        [Route("api/empleado/GetAll")]
+        public IHttpActionResult GetAll()
         {
-            return View(new ML.Empleado());
+            ML.Result result = BL.Empleado.GetAll();
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else //Error
+            {
+                return Content(HttpStatusCode.NotFound, result);
+            }
+        }
+
+        [HttpPost]
+        [Route("api/empleado/Add")]
+        // POST: api/SubCategoria
+        public IHttpActionResult Post([FromBody]ML.Empleado empleado)
+        {
+            ML.Result result = BL.Empleado.Add(empleado);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else //Error
+            {
+                return Content(HttpStatusCode.NotFound, result);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/empleado/GetById/{IdEmpleado}")]
+        public IHttpActionResult GetById(int IdEmpleado)
+        {
+            ML.Result result = BL.Empleado.GetById(IdEmpleado);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else //Error
+            {
+                return Content(HttpStatusCode.NotFound, result);
+            }
+
+
+        }
+
+        [HttpPost]
+        [Route("api/empleado/Update")]
+        // PUT: api/SubCategoria/5
+        public IHttpActionResult Put([FromBody]ML.Empleado empleado)
+        {
+            var result = BL.Empleado.Update(empleado);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else //Error
+            {
+                return Content(HttpStatusCode.NotFound, result);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/empleado/Delete/{IdEmpleado}")]
+        // GET: api/SubCategoria/Delete
+        public IHttpActionResult Delete(int IdEmpleado)
+        {
+            ML.Result result = BL.Empleado.Delete(IdEmpleado);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else //Error
+            {
+                return Content(HttpStatusCode.NotFound, result);
+            }
+
         }
     }
 }
